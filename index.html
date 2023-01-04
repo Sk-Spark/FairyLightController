@@ -54,6 +54,7 @@
         width: 80vw;
         flex-direction: column;
         max-width: 500px;
+        margin: 20px 0px;
       }
       .button {
         color: #fcfffc;
@@ -95,6 +96,19 @@
     <div class="fairy-light-div">
       <div class="pin-div">
         <label class="pin_label">Pin 1</label>
+        <input type="button" class="button" value="on/off" onclick="btnClicked(1)" />
+      </div>
+      <div class="slider-div">
+        <input type="range" id="pwmSlider" min="0" max="1023" step="1"
+            class="slider" pin_value="1" 
+        />
+        <p><span id="textSliderValue">NaNa</span></p>
+      </div>
+    </div>
+
+    <div class="fairy-light-div">
+      <div class="pin-div">
+        <label class="pin_label">Pin 2</label>
         <input type="button" class="button" value="on/off" onclick="btnClicked(1)" />
       </div>
       <div class="slider-div">
