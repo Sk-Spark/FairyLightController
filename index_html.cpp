@@ -24,13 +24,12 @@ const char index_html[] PROGMEM = R"rawliteral(
         align-items: center;
       }
       .slider {
-        -webkit-appearance: none;
         margin: 14px;
-        width: 30vw;
+        width: 100%;
         height: 2vh;
+        max-height: 10px;
         background: #ffd65c;
         outline: none;
-        -webkit-transition: 0.2s;
         transition: opacity 0.2s;
       }
       .slider::-webkit-slider-thumb {
@@ -38,6 +37,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         appearance: none;
         width: 20px;
         height: 4vh;
+        max-height: 20px;
         background: #003249;
         cursor: pointer;
       }
@@ -54,8 +54,9 @@ const char index_html[] PROGMEM = R"rawliteral(
         border: 1px solid #3db13d;
         border-radius: 10px;
         box-shadow: 0px 0px 5px 0px green;
-        max-width: 90vw;
+        width: 80vw;
         flex-direction: column;
+        max-width: 500px;
       }
       .button {
         color: #fcfffc;
@@ -83,10 +84,12 @@ const char index_html[] PROGMEM = R"rawliteral(
       .slider-div{
         display: flex;
         border: 1px solid grey;
-        border-radius: 40px;
+        border-radius: 10px;
         margin: 11px 0px;
         padding: 0px 15px;
         align-items: center;
+        width: 90%;
+        justify-content: space-between;
       }
     </style>
   </head>
@@ -98,15 +101,8 @@ const char index_html[] PROGMEM = R"rawliteral(
         <input type="button" class="button" value="on/off" onclick="btnClicked(1)" />
       </div>
       <div class="slider-div">
-        <input
-        type="range"
-        onchange="updateSliderPWM(1)"
-        id="pwmSlider"
-        min="0"
-        max="1023"
-        value="%SLIDERVALUE%"
-        step="1"
-        class="slider"
+        <input type="range" id="pwmSlider" min="0" max="1023" step="1"
+            class="slider" pin_value="1" 
         />
         <p><span id="textSliderValue">NaNa</span></p>
       </div>
@@ -114,6 +110,18 @@ const char index_html[] PROGMEM = R"rawliteral(
 
 
     <script>
+      const value = document.querySelector("#textSliderValue");
+      const input = document.querySelector("#pwmSlider");
+      value.textContent = input.value;
+      input.addEventListener("input", (event) => {
+      console.log('#1',event);
+      value.textContent = event.target.value;
+      const pin = event.target.attributes.pin_value.value
+      var xhr = new XMLHttpRequest();
+        xhr.open("GET", `/slider?pin=${pin}&value=${event.target.value}`, true);
+        xhr.send();
+      });
+
       function updateSliderPWM(pin) {
         var sliderValue = document.getElementById("pwmSlider").value;
         document.getElementById("textSliderValue").innerHTML = sliderValue;
@@ -122,6 +130,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         xhr.open("GET", `/slider?pin=${pin}&value=${sliderValue}`, true);
         xhr.send();
       }
+
       function btnClicked(pin) {
         var sliderValue = document.getElementById("pwmSlider").value;
         document.getElementById("textSliderValue").innerHTML = sliderValue;
