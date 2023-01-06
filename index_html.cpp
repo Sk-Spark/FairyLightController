@@ -57,6 +57,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         width: 80vw;
         flex-direction: column;
         max-width: 500px;
+        margin: 20px 0px;
       }
       .button {
         color: #fcfffc;
@@ -98,29 +99,42 @@ const char index_html[] PROGMEM = R"rawliteral(
     <div class="fairy-light-div">
       <div class="pin-div">
         <label class="pin_label">Pin 1</label>
-        <input type="button" class="button" value="on/off" onclick="btnClicked(1)" />
+        <input type="button" class="button" value="ON / OFF" onclick="btnClicked(1)" />
       </div>
       <div class="slider-div">
-        <input type="range" id="pwmSlider" min="0" max="1023" step="1"
+        <input type="range" id="pwmSlider" min="0" max="250" step="10"
             class="slider" pin_value="1" 
         />
         <p><span id="textSliderValue">NaNa</span></p>
       </div>
     </div>
 
+    <div class="fairy-light-div">
+      <div class="pin-div">
+        <label class="pin_label">Pin 2</label>
+        <input type="button" class="button" value="ON / OFF" onclick="btnClicked(2)" />
+      </div>
+      <div class="slider-div">
+        <input type="range" id="pwmSlider" min="0" max="250" step="10"
+            class="slider" pin_value="1" 
+        />
+        <p><span id="textSliderValue">NaNa</span></p>
+      </div>
+    </div>
 
     <script>
       const value = document.querySelector("#textSliderValue");
-      const input = document.querySelector("#pwmSlider");
-      value.textContent = input.value;
-      input.addEventListener("input", (event) => {
+      const slider = document.querySelector("#pwmSlider");
+      const updateSlider = (event) => {
       console.log('#1',event);
       value.textContent = event.target.value;
       const pin = event.target.attributes.pin_value.value
       var xhr = new XMLHttpRequest();
         xhr.open("GET", `/slider?pin=${pin}&value=${event.target.value}`, true);
         xhr.send();
-      });
+      };
+      value.textContent = slider.value;
+      slider.addEventListener("input", updateSlider );
 
       function updateSliderPWM(pin) {
         var sliderValue = document.getElementById("pwmSlider").value;

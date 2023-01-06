@@ -4,8 +4,8 @@
 #include <ESP8266mDNS.h>
 
 #ifndef STASSID
-#define STASSID "SparkIot"
-#define STAPSK  "andromida"
+#define STASSID "SparkMI"
+#define STAPSK  "123456789"
 #endif
 
 const char* ssid = STASSID;
@@ -16,6 +16,7 @@ extern const char index_html[];
 ESP8266WebServer server(80);
 
 const int led = 13;
+uint c1 = 4;
 
 void handleRoot() {
   // server.send(200, "text/plain", "hello from esp8266!");
@@ -42,6 +43,11 @@ void handleNotFound() {
 void setup(void) {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
+
+  //C1
+  // pinMode(c1, OUTPUT);
+  analogWrite(c1,0);
+
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -73,6 +79,10 @@ void setup(void) {
     String message = "Slider update:\n";
     for (uint8_t i = 0; i < server.args(); i++) {
       message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+      if(server.argName(i) == "value")
+      {
+        analogWrite(c1,server.arg(i).toInt());
+      }
     }
     server.send(200, "text/plain", message);
     Serial.println(message);
@@ -97,4 +107,17 @@ void setup(void) {
 void loop(void) {
   server.handleClient();
   MDNS.update();
+  // // increase the LED brightness
+  // for(int dutyCycle = 0; dutyCycle < 255; dutyCycle++){   
+  //   // changing the LED brightness with PWM
+  //   analogWrite(c1, dutyCycle);
+  //   delay(10);
+  // }
+
+  // // decrease the LED brightness
+  // for(int dutyCycle = 255; dutyCycle > 0; dutyCycle--){
+  //   // changing the LED brightness with PWM
+  //   analogWrite(c1, dutyCycle);
+  //   delay(10);
+  // }
 }
