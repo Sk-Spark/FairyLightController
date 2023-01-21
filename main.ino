@@ -17,6 +17,8 @@ ESP8266WebServer server(80);
 
 const int led = 13;
 uint c1 = 4;
+uint c1_value = 0;
+uint connecters[2][2] = {{D1,0},{D2,0}};
 
 void handleRoot() {
   // server.send(200, "text/plain", "hello from esp8266!");
@@ -77,11 +79,20 @@ void setup(void) {
   // Send a GET request to <ESP_IP>/slider?pin=<pin>&value=<inputMessage>
   server.on("/slider", HTTP_GET, [] () {
     String message = "Slider update:\n";
+    uint cntr = -1;
+    uint newValue = 0;
     for (uint8_t i = 0; i < server.args(); i++) {
       message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+      if(server.argName(i) == "pin"){
+        cntr = server.arg(i).toInt()-1;
+      }
       if(server.argName(i) == "value")
       {
-        analogWrite(c1,server.arg(i).toInt());
+        newValue = server.arg(i).toInt();
+      }
+      if(cntr >=0 && cntr <=1){
+        connecters[cntr][1] = newValue;
+        analogWrite(connecters[cntr][0] , connecters[cntr][1]);
       }
     }
     server.send(200, "text/plain", message);
@@ -91,9 +102,19 @@ void setup(void) {
   // Send a GET request to <ESP_IP>/toggle?pin=<pin>
   server.on("/toggle", HTTP_GET, [] () {
     String message = "Toggle update:\n";
+    uint cntr=-1;
     for (uint8_t i = 0; i < server.args(); i++) {
-      message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+      message += " " + server.argName(i) + ": " + server.arg(i).toInt() + "\n";
+      cntr = server.arg(i).toInt()-1;
+      if(cntr >=0 && cntr <= 1){        
+        if(connecters[cntr][1]>10)
+          connecters[cntr][1] = 0;
+        else  
+          connecters[cntr][1] = 150;
+        analogWrite(connecters[cntr][0],connecters[cntr][1]);
+      }
     }
+    
     server.send(200, "text/plain", message);
     Serial.println(message);
   }); 

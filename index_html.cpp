@@ -102,10 +102,10 @@ const char index_html[] PROGMEM = R"rawliteral(
         <input type="button" class="button" value="ON / OFF" onclick="btnClicked(1)" />
       </div>
       <div class="slider-div">
-        <input type="range" id="pwmSlider" min="0" max="250" step="10"
+        <input type="range" id="pwmSlider_pin_1" min="0" max="250" step="10"
             class="slider" pin_value="1" 
         />
-        <p><span id="textSliderValue">NaNa</span></p>
+        <p><span id="textSliderValue_pin_1">NaNa</span></p>
       </div>
     </div>
 
@@ -115,44 +115,43 @@ const char index_html[] PROGMEM = R"rawliteral(
         <input type="button" class="button" value="ON / OFF" onclick="btnClicked(2)" />
       </div>
       <div class="slider-div">
-        <input type="range" id="pwmSlider" min="0" max="250" step="10"
-            class="slider" pin_value="1" 
+        <input type="range" id="pwmSlider_pin_2" min="0" max="250" step="10"
+            class="slider" pin_value="2" 
         />
-        <p><span id="textSliderValue">NaNa</span></p>
+        <p><span id="textSliderValue_pin_2">NaNa</span></p>
       </div>
     </div>
 
     <script>
-      const value = document.querySelector("#textSliderValue");
-      const slider = document.querySelector("#pwmSlider");
       const updateSlider = (event) => {
-      console.log('#1',event);
-      value.textContent = event.target.value;
-      const pin = event.target.attributes.pin_value.value
-      var xhr = new XMLHttpRequest();
+        const pin = event.target.attributes.pin_value.value
+        const value = event.target.value;
+        document.querySelector("#textSliderValue_pin_"+pin).textContent = value;
+        console.log('#1 Pin:',pin,'\n Value:',value);
+        var xhr = new XMLHttpRequest();
         xhr.open("GET", `/slider?pin=${pin}&value=${event.target.value}`, true);
         xhr.send();
       };
-      value.textContent = slider.value;
-      slider.addEventListener("input", updateSlider );
 
-      function updateSliderPWM(pin) {
-        var sliderValue = document.getElementById("pwmSlider").value;
-        document.getElementById("textSliderValue").innerHTML = sliderValue;
-        console.log(sliderValue);
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", `/slider?pin=${pin}&value=${sliderValue}`, true);
-        xhr.send();
-      }
+      const slider_pin_1 = document.querySelector("#pwmSlider_pin_1");
+      const  value_pin_1 = document.querySelector("#textSliderValue_pin_1");
+      value_pin_1.textContent = slider_pin_1.value;
+      slider_pin_1.addEventListener("input", updateSlider);
+      
+      const slider_pin_2 = document.querySelector("#pwmSlider_pin_2");
+      const  value_pin_2 = document.querySelector("#textSliderValue_pin_2");
+      value_pin_2.textContent = slider_pin_2.value;
+      slider_pin_2.addEventListener("input", updateSlider);
 
       function btnClicked(pin) {
-        var sliderValue = document.getElementById("pwmSlider").value;
-        document.getElementById("textSliderValue").innerHTML = sliderValue;
-        console.log(sliderValue);
+        var sliderValue = document.getElementById("pwmSlider_pin_"+pin).value;
+        document.getElementById("textSliderValue_pin_"+pin).innerHTML = sliderValue;
+        console.log('#1 Pin:',pin);
         var xhr = new XMLHttpRequest();
         xhr.open("GET", `/toggle?pin=${pin}`, true);
         xhr.send();
       }
+      
     </script>
   </body>
 </html>
