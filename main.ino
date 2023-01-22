@@ -2,11 +2,15 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
+#include <ArduinoJson.h>
 
 #ifndef STASSID
 #define STASSID "SparkMI"
 #define STAPSK  "123456789"
 #endif
+
+#define CNTR_ARRAY_ROWS 2
+#define CNTR_ARRAY_COLS 2
 
 const char* ssid = STASSID;
 const char* password = STAPSK;
@@ -18,10 +22,9 @@ ESP8266WebServer server(80);
 const int led = 13;
 uint c1 = 4;
 uint c1_value = 0;
-uint connecters[2][2] = {{D1,0},{D2,0}};
+uint connecters[CNTR_ARRAY_ROWS][CNTR_ARRAY_COLS] = {{D1,0},{D2,0}};
 
 void handleRoot() {
-  // server.send(200, "text/plain", "hello from esp8266!");
   server.send(200, "text/html", index_html);
 }
 
@@ -45,9 +48,6 @@ void handleNotFound() {
 void setup(void) {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
-
-  //C1
-  // pinMode(c1, OUTPUT);
   analogWrite(c1,0);
 
   Serial.begin(115200);
@@ -66,7 +66,7 @@ void setup(void) {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  if (MDNS.begin("esp8266")) {
+  if (MDNS.begin("flc")) {
     Serial.println("MDNS responder started");
   }
 
@@ -117,6 +117,21 @@ void setup(void) {
     
     server.send(200, "text/plain", message);
     Serial.println(message);
+  });
+
+  // Get Controller connecters status
+  server.on("/status",HTTP_GET, [] (){
+    StaticJsonDocument<200> root;
+    String payload = "";
+    JsonArray data = root.createNestedArray("data");
+    for(int i=0; i<CNTR_ARRAY_ROWS; ++i){
+      data.add(connecters[i][1]);
+    }
+
+    serializeJson(root, payload);
+    Serial.println(payload);
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(200, "text/plain", payload);
   }); 
 
   server.onNotFound(handleNotFound);
