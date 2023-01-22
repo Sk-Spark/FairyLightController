@@ -4,6 +4,8 @@
 #include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
 
+#include "index_html.h"
+
 #ifndef STASSID
 #define STASSID "SparkMI"
 #define STAPSK  "123456789"
@@ -15,14 +17,10 @@
 const char* ssid = STASSID;
 const char* password = STAPSK;
 
-extern const char index_html[];
-
 ESP8266WebServer server(80);
 
 const int led = 13;
-uint c1 = 4;
-uint c1_value = 0;
-uint connecters[CNTR_ARRAY_ROWS][CNTR_ARRAY_COLS] = {{D1,0},{D2,0}};
+uint connecters[CNTR_ARRAY_ROWS][CNTR_ARRAY_COLS] = {{D1,150},{D2,150}};
 
 void handleRoot() {
   server.send(200, "text/html", index_html);
@@ -45,10 +43,17 @@ void handleNotFound() {
   digitalWrite(led, 0);
 }
 
+void setupLights(){
+  for(int i=0; i<CNTR_ARRAY_ROWS; ++i){
+      analogWrite(connecters[i][0],connecters[i][1]);
+    }
+}
+
 void setup(void) {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
-  analogWrite(c1,0);
+
+  setupLights();
 
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);

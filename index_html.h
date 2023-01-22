@@ -1,4 +1,5 @@
-#include <pgmspace.h>
+#ifndef INDEX_HTML_H
+#define INDEX_HTML_H
 
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
@@ -191,3 +192,4 @@ const char index_html[] PROGMEM = R"rawliteral(
 </html>
 )rawliteral";
 
+#endif
