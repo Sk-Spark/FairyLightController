@@ -51,7 +51,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         display: flex;
         align-items: center;
         padding: 5px 20px;
-        border: 1px solid #3db13d;
+        /* border: 1px solid #3db13d; */
         border-radius: 10px;
         box-shadow: 0px 0px 5px 0px green;
         width: 80vw;
@@ -123,6 +123,14 @@ const char index_html[] PROGMEM = R"rawliteral(
     </div>
 
     <script>
+      const debounce = (func, timeout = 50) => {
+        let timer;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+      }
+
       const updateSlider = (event) => {
         const pin = event.target.attributes.pin_value.value
         const value = event.target.value;
@@ -136,12 +144,12 @@ const char index_html[] PROGMEM = R"rawliteral(
       const slider_pin_1 = document.querySelector("#pwmSlider_pin_1");
       const  value_pin_1 = document.querySelector("#textSliderValue_pin_1");
       value_pin_1.textContent = slider_pin_1.value;
-      slider_pin_1.addEventListener("input", updateSlider);
+      slider_pin_1.addEventListener("input", debounce((event)=>updateSlider(event)));
       
       const slider_pin_2 = document.querySelector("#pwmSlider_pin_2");
       const  value_pin_2 = document.querySelector("#textSliderValue_pin_2");
       value_pin_2.textContent = slider_pin_2.value;
-      slider_pin_2.addEventListener("input", updateSlider);
+      slider_pin_2.addEventListener("input", debounce((event)=>updateSlider(event)));
 
       function btnClicked(pin) {
         var sliderValue = document.getElementById("pwmSlider_pin_"+pin).value;
