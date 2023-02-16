@@ -12,7 +12,7 @@
 #endif
 
 // Connectors data array details
-#define CNTR_ARRAY_ROWS 2
+#define CNTR_ARRAY_ROWS 4
 #define CNTR_ARRAY_COLS 2
 
 const char* ssid = STASSID;
@@ -26,7 +26,9 @@ const int led = 13;
  Connector array
  [{<connecter pin>, <init vlaue>}]
 */
-uint connecters[CNTR_ARRAY_ROWS][CNTR_ARRAY_COLS] = {{D1,150},{D2,150}};
+uint INITIAL_BRIGHTNESS = 360;
+uint connecters[CNTR_ARRAY_ROWS][CNTR_ARRAY_COLS] = {{D1,INITIAL_BRIGHTNESS},{D2,INITIAL_BRIGHTNESS},
+  {D3,INITIAL_BRIGHTNESS},{D4,INITIAL_BRIGHTNESS}};
 
 void handleRoot() {
   server.send(200, "text/html", index_html);
@@ -57,7 +59,7 @@ void setupLights(){
 
 void setup(void) {
   pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
+  digitalWrite(led, 1);
 
   setupLights();
 
@@ -101,7 +103,7 @@ void setup(void) {
       {
         newValue = server.arg(i).toInt();
       }
-      if(cntr >=0 && cntr <=1){
+      if(cntr >=0 && cntr <=CNTR_ARRAY_ROWS){
         connecters[cntr][1] = newValue;
         analogWrite(connecters[cntr][0] , connecters[cntr][1]);
       }
@@ -117,11 +119,11 @@ void setup(void) {
     for (uint8_t i = 0; i < server.args(); i++) {
       message += " " + server.argName(i) + ": " + server.arg(i).toInt() + "\n";
       cntr = server.arg(i).toInt()-1;
-      if(cntr >=0 && cntr <= 1){        
+      if(cntr >=0 && cntr < CNTR_ARRAY_ROWS){        
         if(connecters[cntr][1]>10)
           connecters[cntr][1] = 0;
         else  
-          connecters[cntr][1] = 150;
+          connecters[cntr][1] = INITIAL_BRIGHTNESS;
         analogWrite(connecters[cntr][0],connecters[cntr][1]);
       }
     }

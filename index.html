@@ -25,9 +25,11 @@
         width: 100%;
         height: 2vh;
         max-height: 10px;
-        background: #ffd65c;
+        background: #2e93ce;
         outline: none;
         transition: opacity 0.2s;
+        -webkit-appearance: none;
+        border-radius:  5px;
       }
       .slider::-webkit-slider-thumb {
         -webkit-appearance: none;
@@ -37,6 +39,7 @@
         max-height: 20px;
         background: #003249;
         cursor: pointer;
+        border-radius: 10px;
       }
       .slider::-moz-range-thumb {
         width: 35px;
@@ -119,7 +122,34 @@
       </div>
     </div>
 
+    <div class="fairy-light-div">
+      <div class="pin-div">
+        <label class="pin_label">Pin 3</label>
+        <input type="button" class="button" value="ON / OFF" onclick="btnClicked(3)" />
+      </div>
+      <div class="slider-div">
+        <input type="range" id="pwmSlider_pin_3" min="0" max="1240" step="10"
+            class="slider" pin_value="3" 
+        />
+        <p><span id="textSliderValue_pin_3">NaNa</span></p>
+      </div>
+    </div>
+
+    <div class="fairy-light-div">
+      <div class="pin-div">
+        <label class="pin_label">Pin 4</label>
+        <input type="button" class="button" value="ON / OFF" onclick="btnClicked(4)" />
+      </div>
+      <div class="slider-div">
+        <input type="range" id="pwmSlider_pin_4" min="0" max="1240" step="10"
+            class="slider" pin_value="4" 
+        />
+        <p><span id="textSliderValue_pin_4">NaNa</span></p>
+      </div>
+    </div>
+
     <script>
+      const baseUrl = window.origin;
       const debounce = (func, timeout = 20) => {
         let timer;
         return (...args) => {
@@ -134,7 +164,7 @@
         document.querySelector("#textSliderValue_pin_"+pin).textContent = value;
         console.log('#1 Pin:',pin,'\n Value:',value);
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", `/slider?pin=${pin}&value=${event.target.value}`, true);
+        xhr.open("GET", `${baseUrl}/slider?pin=${pin}&value=${event.target.value}`, true);
         xhr.send();
       };
 
@@ -147,7 +177,7 @@
 
       const getStatus = () =>{
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", `/status`, true);
+        xhr.open("GET", `${baseUrl}/status`, true);
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
             const data = JSON.parse(xhr.response).data;
@@ -170,13 +200,23 @@
       const  value_pin_2 = document.querySelector("#textSliderValue_pin_2");
       value_pin_2.textContent = slider_pin_2.value;
       slider_pin_2.addEventListener("input", debounce((event)=>onSliderUpdate(event)));
+      
+      const slider_pin_3 = document.querySelector("#pwmSlider_pin_3");
+      const  value_pin_3 = document.querySelector("#textSliderValue_pin_3");
+      value_pin_3.textContent = slider_pin_3.value;
+      slider_pin_3.addEventListener("input", debounce((event)=>onSliderUpdate(event)));
+      
+      const slider_pin_4 = document.querySelector("#pwmSlider_pin_4");
+      const  value_pin_4 = document.querySelector("#textSliderValue_pin_4");
+      value_pin_4.textContent = slider_pin_4.value;
+      slider_pin_4.addEventListener("input", debounce((event)=>onSliderUpdate(event)));
 
       function btnClicked(pin) {
         var sliderValue = document.getElementById("pwmSlider_pin_"+pin).value;
         document.getElementById("textSliderValue_pin_"+pin).innerHTML = sliderValue;
         console.log('#1 Pin:',pin);
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", `/toggle?pin=${pin}`, true);
+        xhr.open("GET", `${baseUrl}/toggle?pin=${pin}`, true);
         xhr.send();
         getStatus();
       }
