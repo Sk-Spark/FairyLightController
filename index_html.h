@@ -103,7 +103,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         <input type="button" class="button" value="ON / OFF" onclick="btnClicked(1)" />
       </div>
       <div class="slider-div">
-        <input type="range" id="pwmSlider_pin_1" min="0" max="250" step="10"
+        <input type="range" id="pwmSlider_pin_1" min="0" max="1240" step="10"
             class="slider" pin_value="1" 
         />
         <p><span id="textSliderValue_pin_1">NaNa</span></p>
@@ -116,7 +116,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         <input type="button" class="button" value="ON / OFF" onclick="btnClicked(2)" />
       </div>
       <div class="slider-div">
-        <input type="range" id="pwmSlider_pin_2" min="0" max="250" step="10"
+        <input type="range" id="pwmSlider_pin_2" min="0" max="1240" step="10"
             class="slider" pin_value="2" 
         />
         <p><span id="textSliderValue_pin_2">NaNa</span></p>
@@ -124,7 +124,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     </div>
 
     <script>
-      const debounce = (func, timeout = 50) => {
+      const debounce = (func, timeout = 20) => {
         let timer;
         return (...args) => {
           clearTimeout(timer);

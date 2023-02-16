@@ -11,6 +11,7 @@
 #define STAPSK  "123456789"
 #endif
 
+// Connectors data array details
 #define CNTR_ARRAY_ROWS 2
 #define CNTR_ARRAY_COLS 2
 
@@ -19,7 +20,12 @@ const char* password = STAPSK;
 
 ESP8266WebServer server(80);
 
+// Status Led pin D0
 const int led = 13;
+/*
+ Connector array
+ [{<connecter pin>, <init vlaue>}]
+*/
 uint connecters[CNTR_ARRAY_ROWS][CNTR_ARRAY_COLS] = {{D1,150},{D2,150}};
 
 void handleRoot() {
