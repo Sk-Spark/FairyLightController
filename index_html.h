@@ -1,3 +1,7 @@
+#ifndef INDEX_HTML_H
+#define INDEX_HTML_H
+
+const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html>
   <head>
@@ -226,3 +230,6 @@
     </script>
   </body>
 </html>
+)rawliteral";
+
+#endif
