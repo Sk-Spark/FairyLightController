@@ -5,11 +5,7 @@
 #include <ArduinoJson.h>
 
 #include "index_html.h"
-
-#ifndef STASSID
-#define STASSID "SparkMI"
-#define STAPSK  "123456789"
-#endif
+#include "config.h"
 
 // Connectors data array details
 #define CNTR_ARRAY_ROWS 4
@@ -79,8 +75,15 @@ void setup(void) {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  if (MDNS.begin("flc")) {
-    Serial.println("MDNS responder started");
+   // *** mDNS Setup ***
+  if (!MDNS.begin("flc"))
+  { // Start the mDNS responder for esp8266.local
+      Serial.println("Error setting up MDNS responder!");
+  }
+  else{
+      Serial.println("mDNS responder started");
+      // Add service to MDNS-SD
+      MDNS.addService("http", "tcp", 80);
   }
 
   server.on("/", handleRoot);
