@@ -5,6 +5,8 @@
 #include <ArduinoJson.h>
 
 #include "index_html.h"
+#include "main_js.h"
+#include "main_css.h"
 #include "config.h"
 
 // Connectors data array details
@@ -81,7 +83,7 @@ void setup(void) {
       Serial.println("Error setting up MDNS responder!");
   }
   else{
-      Serial.println("mDNS responder started");
+      Serial.println("mDNS responder started. \nConnect to: http://flc.local/");
       // Add service to MDNS-SD
       MDNS.addService("http", "tcp", 80);
   }
@@ -90,6 +92,14 @@ void setup(void) {
 
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
+  });
+
+  server.on("/main.js", []() {
+    server.send(200, "application/javascript", main_js);
+  });
+
+  server.on("/main.css", []() {
+    server.send(200, "text/css", main_css);
   });
 
   // Send a GET request to <ESP_IP>/slider?pin=<pin>&value=<inputMessage>
