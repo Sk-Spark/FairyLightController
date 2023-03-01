@@ -44,7 +44,7 @@ const Application: React.FC = () => {
     <div id='erwt'>
       <div className='header'>
         <div className='main-heading'>
-          <h1 className='themed'>React Webpack Typescript</h1>
+          <h1 className='themed'>Fairy Light Controller</h1>
         </div>
         <div className='main-teaser'>
           <div>
