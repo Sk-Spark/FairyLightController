@@ -4,6 +4,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ZipPlugin = require('zip-webpack-plugin');
 
 module.exports = [
   new ForkTsCheckerWebpackPlugin(),
@@ -17,5 +18,22 @@ module.exports = [
   new MiniCssExtractPlugin({
     filename: '[name].css',
     chunkFilename: '[name].chunk.css',
+  }),
+  new ZipPlugin({
+    include: [/\.js$/],
+    filename: 'main.js',
+
+    // OPTIONAL: see https://github.com/thejoshwolfe/yazl#addfilerealpath-metadatapath-options
+    fileOptions: {
+      mtime: new Date(),
+      mode: 0o100664,
+      compress: true,
+      forceZip64Format: false,
+    },
+
+    // OPTIONAL: see https://github.com/thejoshwolfe/yazl#endoptions-finalsizecallback
+    zipOptions: {
+      forceZip64Format: false,
+    },
   }),
 ].filter(Boolean);

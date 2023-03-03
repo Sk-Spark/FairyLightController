@@ -5,6 +5,8 @@ import erwt from '@assets/icons/erwt.png';
 import nodejs from '@assets/icons/nodejs.png';
 import webpack from '@assets/icons/webpack.png';
 import license from '@assets/icons/license.png';
+import off from '@assets/icons/off.png';
+import on from '@assets/icons/on.png';
 
 export const icons = {
   chrome,
@@ -14,4 +16,6 @@ export const icons = {
   nodejs,
   webpack,
   license,
+  on,
+  off,
 };

@@ -3,11 +3,13 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
+// #include <zlib.h>
 
 #include "index_html.h"
 #include "main_js.h"
 #include "main_css.h"
 #include "config.h"
+// #include "main_js_zip.h"
 
 // Connectors data array details
 #define CNTR_ARRAY_ROWS 4
@@ -95,6 +97,7 @@ void setup(void) {
   });
 
   server.on("/main.js", []() {
+    // server.sendHeader("Content-Encoding", "gzip");
     server.send(200, "application/javascript", main_js);
   });
 

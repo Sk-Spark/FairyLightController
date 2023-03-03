@@ -1,7 +1,7 @@
 // Include fs module
 const fs = require('fs');
 const copyFromDir = __dirname + '/../dist';
-const files = ['main.js', 'index.html', 'main.css'];
+const files = ['main.js', 'main.js.zip', , 'index.html', 'main.css'];
 // const copyToDir = __dirname+'/../../'+'buildCpp';
 const copyToDir = __dirname + '/../../';
 
@@ -9,7 +9,7 @@ files.forEach((file) => {
   // Use fs.readFile() method to read the file
   fs.readFile(copyFromDir + '/' + file, 'utf8', function (err, data) {
     // console.log(data);
-    const filename = file.replace('.', '_');
+    const filename = file.replaceAll('.', '_');
     const headerFilename = filename + '_H';
     const payload = `
       #ifndef ${headerFilename}
