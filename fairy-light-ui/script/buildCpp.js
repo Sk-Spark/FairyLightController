@@ -1,7 +1,7 @@
 // Include fs module
 const fs = require('fs');
 const copyFromDir = __dirname + '/../dist';
-const files = ['main.js', 'main.js.zip', , 'index.html', 'main.css'];
+const files = ['main.js', 'main.js.zip', 'index.html', 'main.css'];
 // const copyToDir = __dirname+'/../../'+'buildCpp';
 const copyToDir = __dirname + '/../../';
 

@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { getApiValueFromSliderValue } from '../helper';
 import { icons } from '../Icons';
 import { updateSlider } from './actions';
 import './Slider.scss';
@@ -8,6 +9,8 @@ import './Slider.scss';
 interface SliderProps {
   pin: number;
   sync: boolean;
+  value: number;
+  setValue: (pin: number, value: number) => void;
 }
 
 export const Slider = (props: SliderProps) => {
@@ -18,7 +21,8 @@ export const Slider = (props: SliderProps) => {
   const initValue = Math.floor(maxValue * 0.3);
   const debounceTime = 50;
 
-  const [value, setValue] = useState(initValue);
+  const { pin, value, setValue } = { ...props };
+
   const disable = value === 0;
   const sliderProps = {
     fill: disable ? '#eee' : '#03a9f4',
@@ -41,7 +45,7 @@ export const Slider = (props: SliderProps) => {
   ).current;
 
   useEffect(() => {
-    debouncedSliderUpdate('url', apiVal, props.pin);
+    debouncedSliderUpdate('http://flc.local', apiVal, props.pin);
   }, [value]);
 
   return (
@@ -49,7 +53,7 @@ export const Slider = (props: SliderProps) => {
       <button
         className='slider_btn'
         onClick={() => {
-          value > 0 ? setValue(0) : setValue(initValue);
+          value > 0 ? setValue(pin, 0) : setValue(pin, initValue);
         }}
       >
         <img
@@ -66,10 +70,10 @@ export const Slider = (props: SliderProps) => {
         step={step}
         value={value}
         onChange={(data) => {
-          const apiVal = Math.floor(Number(data.target.value) * factor);
           const val = Number(data.target.value);
+          const apiVal = getApiValueFromSliderValue(val);
           console.log('#1 apiVal:', apiVal);
-          setValue(val);
+          setValue(pin, val);
         }}
       />
       <label className='length__title field-title'>{`${value}%`}</label>

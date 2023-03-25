@@ -2,7 +2,7 @@ const axios = require('axios');
 
 export const updateSlider = (url: string, value: number, pin: number) => {
   axios
-    .get(`/slider?pin=${pin}&value=${value}`)
+    .get(`${url ?? ''}/slider?pin=${pin}&value=${value}`)
     .then((resp: any) => {
       console.log(resp.data);
     })
