@@ -9,7 +9,7 @@ files.forEach((file) => {
   // Use fs.readFile() method to read the file
   fs.readFile(copyFromDir + '/' + file, 'utf8', function (err, data) {
     // console.log(data);
-    const filename = file.replaceAll('.', '_');
+    const filename = file.replace(/\./g, '_');
     const headerFilename = filename + '_H';
     const payload = `
       #ifndef ${headerFilename}

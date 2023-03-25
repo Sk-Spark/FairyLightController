@@ -8,7 +8,7 @@ export const Application = () => {
   let pin = 0;
   const maxValue = 100;
   const initValue = Math.floor(maxValue * 0.3);
-  const url = 'http://flc.local';
+  const url = '';
   const [lightValues, setLightValues] = useState([
     initValue,
     initValue,

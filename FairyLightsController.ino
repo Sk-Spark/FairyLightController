@@ -54,44 +54,55 @@ void handleNotFound() {
   digitalWrite(led, 0);
 }
 
-void setupLights(){
-  for(int i=0; i<CNTR_ARRAY_ROWS; ++i){
-      analogWrite(connecters[i][0],connecters[i][1]);
-    }
-}
-
 void writeState(uint* state, uint len){
   EEPROM_ADDR = 0;
+  String msg="EEPROM Write: ";
+
   for(int i=0; i<len; ++i){
     // EEPROM.write(EEPROM_ADDR, state[i]);
     EEPROM.put(EEPROM_ADDR, state[i]);
     EEPROM_ADDR += sizeof(uint);
+    msg += state[i];
+    msg += '\n';
   }
   EEPROM.commit();
-  Serial.println("EEPROM write !!!");
+  Serial.println(msg);
 }
 
-void readState(){
+void readState(uint * state){
+  // uint state[CNTR_ARRAY_ROWS];
   EEPROM_ADDR = 0;
   String msg="EEPROM read: ";
   uint d;
   for(int i=0; i<CNTR_ARRAY_ROWS; ++i){
     EEPROM.get(EEPROM_ADDR, d);
     EEPROM_ADDR += sizeof(uint);
+    state[i] = d;
     msg += d;
     msg += '\n';
   }  
   Serial.println(msg);
+  // return &state[0];
+}
+
+void setupLights(){
+  uint state[CNTR_ARRAY_ROWS];
+  readState(state);
+  for(int i=0; i<CNTR_ARRAY_ROWS; ++i){
+    analogWrite(connecters[i][0],state[i]);
+    connecters[i][1] = state[i];
+  }
 }
 
 void setup(void) {
   pinMode(led, OUTPUT);
   digitalWrite(led, 1);
 
-  setupLights();
-
   EEPROM.begin(EEPROM_SIZE);
   Serial.begin(115200);
+  
+  setupLights();
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -182,8 +193,27 @@ void setup(void) {
     StaticJsonDocument<200> root;
     String payload = "";
     JsonArray status = root.createNestedArray("status");
+    // uint state[CNTR_ARRAY_ROWS]; 
+    // readState(state);
     for(int i=0; i<CNTR_ARRAY_ROWS; ++i){
       status.add(connecters[i][1]);
+    }
+
+    serializeJson(root, payload);
+    Serial.println(payload);
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(200, "text/json", payload);
+  }); 
+
+  // Get Controller connecters status
+  server.on("/readSavedVal",HTTP_GET, [] (){
+    StaticJsonDocument<200> root;
+    String payload = "";
+    JsonArray status = root.createNestedArray("status");
+    uint state[CNTR_ARRAY_ROWS]; 
+    readState(state);
+    for(int i=0; i<CNTR_ARRAY_ROWS; ++i){
+      status.add(state[i]);
     }
 
     serializeJson(root, payload);
@@ -197,7 +227,6 @@ void setup(void) {
     StaticJsonDocument<200> root;
     String message = "Save State:\n";   
     uint *state;
-
     String postBody = server.arg("plain");  
     DynamicJsonDocument doc(512);
     DeserializationError error = deserializeJson(doc, postBody);
@@ -229,7 +258,7 @@ void setup(void) {
         }
       }
       writeState(state, len);
-      readState();
+      // readState();
     }
     
     Serial.println(message);
