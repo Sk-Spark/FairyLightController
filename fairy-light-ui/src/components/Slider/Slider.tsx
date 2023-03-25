@@ -45,7 +45,7 @@ export const Slider = (props: SliderProps) => {
   ).current;
 
   useEffect(() => {
-    debouncedSliderUpdate('http://flc.local', apiVal, props.pin);
+    debouncedSliderUpdate('', apiVal, props.pin);
   }, [value]);
 
   return (
